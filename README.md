@@ -9,10 +9,12 @@ This repository contains comprehensive documentation for the PalletCloud logisti
 ### Documentation (`/docs`)
 - **[System Requirements](docs/system-requirements.md)** - Comprehensive requirements specification including functional, technical, and business requirements
 - **[High-Level Architecture](docs/high-level-architecture.md)** - System architecture overview with microservices design
+- **[Cloud Routing](docs/cloud-routing.md)** - Domain routing, proxy layer, and ingress configuration for pallet.omniphics.com
 - **[User Journey & Order Status](docs/user-jouney-order-status.md)** - Complete user workflow and booking lifecycle documentation
 
 ### Visual Diagrams (`/diagrams`)
 - **System Design High-Level Architecture** - Visual representation of the microservices architecture
+- **System Design Cloud Routing** - Infrastructure and domain routing configuration diagram
 - **System Design User Journey** - User workflow and booking process visualization  
 - **System Requirements Platform Mindmap** - Mind map of platform requirements and features
 - **Source Files** (`/diagrams/_source`) - Editable diagram source files (DrawIO format)
@@ -40,7 +42,9 @@ PalletCloud is a comprehensive logistics and storage management platform that pr
 ### Architecture Highlights
 - **Microservices Architecture** with dedicated services for Users, Bookings, Files, Notifications, and Activity tracking
 - **API Gateway** for centralized routing and security
-- **Centralized Authentication** server
+- **Cloud Infrastructure** with Cloudflare routing, proxy layer, and ingress configuration
+- **Domain-based Service Routing** across www, admin, api, and auth subdomains
+- **Centralized Authentication** server with Keycloak
 - **Comprehensive workflow support** from search to completion
 - **Administrative oversight** with verification workflows
 
@@ -50,8 +54,9 @@ This repository serves as the central documentation hub for PalletCloud. Use the
 
 1. **System Requirements** - What the platform needs to accomplish
 2. **Architecture Design** - How the system is structured 
-3. **User Journey** - How users interact with the platform
-4. **Visual Diagrams** - Architectural and workflow visualizations
+3. **Cloud Routing** - Infrastructure setup and domain routing configuration
+4. **User Journey** - How users interact with the platform
+5. **Visual Diagrams** - Architectural and workflow visualizations
 
 ## 📋 ADR Framework
 
