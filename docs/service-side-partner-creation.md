@@ -4,76 +4,94 @@
 
 ### Partner Journey Flow
 
-1. **Partner Registration (Initiation)**
+1. **Partner Registration Request**
 
-   * Admin (via Admin Portal) submits a new partner registration form.
-   * Includes two sets of data:
+   * `POST /api/partners/register` from `AdminPortal`.
+   * Payload includes:
 
-     * **Organization Profile** (business name, type, registration number, address, phone, email, industry, capacity).
-     * **Primary User** (first name, last name, email, phone, `userType=VENDOR`).
+     * **Organization Data** (name, description).
+     * **Partner Profile Data** (company details, registration, address, industry, capacity, etc.).
+     * **Primary User Data** (firstName, lastName, email, phone, type=`PARTNER`).
 
-2. **Validation & Transaction Start**
+2. **Begin Database Transaction**
 
-   * `UserService` begins a transaction.
-   * Checks if the **organization profile** already exists in the system.
+   * `UserService` initiates a transaction.
 
-3. **Organization Handling**
+3. **Organization Creation**
 
-   * If found → reuse existing `Organization_Profile`.
-   * If not found → create new **Organization\_Profile** record with provided details.
+   * `INSERT INTO Organization` with organizationId, name, description.
+   * Returns `organizationId` (e.g., `org-abc-storage-123`).
 
-4. **Primary Partner User Creation**
+4. **Organization Profile Creation**
 
-   * Creates a new user in **User** with type `VENDOR`.
-   * Assigns role: **Vendor Admin** from the Roles table.
-   * Mapping stored in **User\_Associated\_Role**.
+   * `INSERT INTO Organization_Profile` with extended business details linked to `organizationId`.
+   * Marks `isVerified=false` by default.
+   * Returns `organizationProfileId`.
 
-5. **Transaction Commit**
+5. **User Creation**
 
-   * Saves both organization (if new) and primary partner user in DB.
+   * `INSERT INTO User` for primary partner admin.
+   * Fields: userId, organizationId, firstName, lastName, email, phone, type=`PARTNER`, status=`ACTIVE`.
 
-6. **Integration with Booking Service**
+6. **Role Assignment**
 
-   * Calls `ServiceDiscovery` to locate `BookingService`.
-   * Sends a `POST /api/companies/create-primary` request to create the **primary company** for this organization in BookingService.
+   * Query: `SELECT id FROM Roles WHERE type='PARTNER' AND name='PARTNER Admin'`.
+   * Assign via `INSERT INTO User_Associated_Roles`.
 
-7. **Response Delivery**
+7. **Commit Transaction**
 
-   * API returns:
+   * Once organization, profile, user, and roles are persisted, transaction commits.
 
-     * `organizationId`, `userId`, `partnerProfileId`, `companyId`.
-     * Confirmation message: **“Partner registration completed successfully.”**
+8. **Create Primary Company in Booking Service**
+
+   * Calls `ServiceDiscovery` for `BookingService` URL.
+   * `POST /api/companies/create-primary` with organization + profile details.
+   * BookingService creates a **Primary Company** record linked to the partner.
+
+9. **Success Response**
+
+   * Returns:
+
+     * `organizationId`, `userId`, `organizationProfileId`, `companyId`.
+   * Message: **“Partner registration completed.”**
 
 ---
 
 ### Partner Alternative Flow – Adding Additional Users
 
-1. **Add Partner User Request**
+1. **Add User Request**
 
-   * Admin (via Admin Portal) submits form with new user details.
+   * `POST /api/partners/add-user` from `AdminPortal`.
+   * Payload includes: `organizationId`, user details.
 
-2. **Validation & Creation**
+2. **Validation**
 
-   * Organization lookup ensures the org exists.
-   * Creates new user in **User** table with type `VENDOR`.
-   * Assigns role: **Vendor Staff** from the Roles table.
-   * Links user to the same `organizationId`.
+   * `SELECT * FROM Organization WHERE organizationId=?` to verify org exists.
 
-3. **Response Delivery**
+3. **User Creation**
 
-   * API returns the new `userId`.
-   * Message: **“Additional partner user created successfully.”**
+   * `INSERT INTO User` with type=`PARTNER`.
+   * Status=`ACTIVE`.
+
+4. **Role Assignment**
+
+   * Query: `SELECT id FROM Roles WHERE type='PARTNER' AND name='PARTNER Staff'`.
+   * Assign via `INSERT INTO User_Associated_Roles`.
+
+5. **Success Response**
+
+   * Returns new `userId`.
+   * Message: **“Additional user created for partner.”**
 
 ---
 
 ### Partner Status Sequence
 
-* **Pending** → Registration request initiated.
-* **Organization Profile Created** → Organization record inserted or linked.
-* **Primary User Active** → Vendor Admin created and role assigned.
-* **Company Created** → Corresponding company created in BookingService.
-* **Additional Users Added** → Staff users created and linked to partner org.
-* **Suspended** → Partner organization blocked by admin.
-* **Deleted** → Partner organization soft-deleted from the system.
-
----
+* **Pending** → Registration started.
+* **Organization Created** → Organization inserted.
+* **Organization Profile Created** → Extended profile added.
+* **Primary User Active** → Admin user created and role assigned.
+* **Company Created** → Booking Service company record established.
+* **Additional Users Added** → Partner staff created.
+* **Suspended** → Partner temporarily blocked.
+* **Deleted** → Partner soft-deleted with related users.
