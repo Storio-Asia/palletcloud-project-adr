@@ -12,9 +12,11 @@ PalletCloud is a sophisticated logistics and storage management platform designe
 - **[System Requirements](docs/system-requirements.md)** - Comprehensive requirements specification including functional, technical, and business requirements
 - **[High-Level Architecture](docs/high-level-architecture.md)** - System architecture overview with microservices design patterns
 - **[Cloud Routing](docs/cloud-routing.md)** - Domain routing, proxy layer, and ingress configuration for pallet.omniphics.com
+- **[Booking Service Data Model](docs/booking-service-data-model.md)** - Complete database schema documentation with ADRs for all tables
 - **[User Journey & Order Status](docs/user-jouney-order-status.md)** - Complete user workflow and booking lifecycle documentation
 - **[Service-Side User Creation Flow](docs/service-side-user-creation-flow.md)** - Backend user registration and onboarding processes
 - **[Service-Side Partner Creation](docs/service-side-partner-creation.md)** - Partner onboarding and management workflows
+- **Storio Tenant Info Request Form v1.docx** - Business requirements and tenant onboarding form
 
 ### 🎨 Visual Diagrams (`/diagrams`)
 
@@ -22,19 +24,21 @@ PalletCloud is a sophisticated logistics and storage management platform designe
 - **System Design High-Level Architecture** - Visual representation of the microservices architecture
 - **System Design Cloud Routing** - Infrastructure and domain routing configuration diagram
 - **User Service Schema ERD** - Entity Relationship Diagram for user service database design
+- **Booking Service Schema** - Complete database schema for booking system with all tables and relationships
 
 #### Process Flow Diagrams
 - **System Design User Journey** - User workflow and booking process visualization
 - **System Design User Register Login Sequence** - Authentication and registration flow sequence diagram
-- **System Design Booking Service Data Flow Sequence** - Booking service workflow and data flow
+- **System Design Booking Service Data Flow Sequence** - Booking service workflow and data flow (with KF comments)
 - **Service-Side Customer Creation Flow** - Backend customer onboarding process
-- **Service-Side Partner Creation Flow** - Partner registration and setup workflow
+- **Partner Registration Flow Service-Side** - Partner registration and setup workflow
 
 #### Requirements & Planning
 - **System Requirements Platform Mindmap** - Mind map of platform requirements and features
 - **Source Files** (`/diagrams/_source`) - Editable diagram source files (DrawIO format)
 
 ### 🏛️ Architectural Decision Records (`/adrs`)
+- **[Pallet Storage Booking System](adrs/pallet-storage-booking-system.md)** - Core multi-tenant booking architecture and system design
 - **[Choosing MySQL over PostgreSQL](adrs/choosing-mysql-over-postgres.md)** - Database selection rationale
 - **[Choosing Next.js 15 with React 18](adrs/choosing-next15-with-react18.md)** - Frontend framework decision
 - **[Keycloak Integration Strategy](adrs/keycloak-integration-stratagy.md)** - Authentication and identity management approach
@@ -110,9 +114,10 @@ This repository serves as the central documentation hub for PalletCloud. Navigat
 ### 📖 Documentation Journey
 1. **[System Requirements](docs/system-requirements.md)** - Start here to understand what the platform accomplishes
 2. **[High-Level Architecture](docs/high-level-architecture.md)** - Learn how the system is structured and organized
-3. **[Cloud Routing](docs/cloud-routing.md)** - Understand the infrastructure setup and domain configuration
-4. **[User Journey](docs/user-jouney-order-status.md)** - Follow how users interact with the platform
-5. **[Service Flows](docs/service-side-user-creation-flow.md)** - Dive into backend processes and workflows
+3. **[Booking Service Data Model](docs/booking-service-data-model.md)** - Understand the complete database schema with detailed ADRs
+4. **[Cloud Routing](docs/cloud-routing.md)** - Understand the infrastructure setup and domain configuration
+5. **[User Journey](docs/user-jouney-order-status.md)** - Follow how users interact with the platform
+6. **[Service Flows](docs/service-side-user-creation-flow.md)** - Dive into backend processes and workflows
 
 ### 🎨 Visual Learning
 - Explore the `/diagrams` directory for comprehensive visual representations
@@ -139,12 +144,13 @@ Our architectural decisions are documented using the ADR (Architectural Decision
 
 ### 🎯 Current ADRs
 Our existing ADRs cover critical architectural decisions including:
-- Database technology selection and rationale
-- Frontend framework and version choices
-- Authentication and identity management strategy
-- Multi-tenancy and organization design patterns
-- User role and permission system architecture
-- Service schema and data modeling decisions
+- **Core booking system architecture** with multi-tenant facility management
+- **Database technology selection** and rationale (MySQL vs PostgreSQL)
+- **Frontend framework and version choices** (Next.js 15 with React 18)
+- **Authentication and identity management strategy** (Keycloak integration)
+- **Multi-tenancy and organization design patterns** (organization-per-customer)
+- **User role and permission system architecture** with granular access control
+- **Service schema and data modeling decisions** for users and booking services
 
 ---
 
@@ -155,10 +161,12 @@ Our existing ADRs cover critical architectural decisions including:
 ✅ **Completed**
 - Comprehensive requirements gathering and analysis
 - System architecture design and documentation
-- Core ADRs for foundational technology decisions
-- Database schema design and ERD creation
+- Core ADRs for foundational technology decisions including booking system architecture
+- Complete database schema design with detailed table documentation and ADRs
 - User journey mapping and process flows
 - Infrastructure and routing configuration
+- Partner and customer onboarding workflow documentation
+- Multi-tenant booking system architecture definition
 
 🚧 **In Progress**
 - Detailed service specifications and API design
